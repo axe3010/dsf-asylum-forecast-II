@@ -20,9 +20,10 @@ Goal: reproduce all outputs (figures and tables) from the raw data.
 1b. `01b_preprocess_indicators.ipynb`: load and check the Frontex detections by route, build the indicator (sum of the Central Mediterranean, Eastern Mediterranean and Western Balkan routes), state what is known at the cutoff, explore it before the test period, save `data/processed/routes_clean.csv`.
 2. `02_estimate.ipynb`: seasonal naive, 12-month average and three (S)ARIMA models in an expanding-window backtest (141 origins, h = 1, 2, 3); saves `data/processed/backtest_forecasts.csv`. Runs in about 30 seconds.
 2b. `02b_estimate_regression.ipynb`: linear regression, Ridge and Lasso on the series' own past (one model per horizon), same backtest; the penalty is chosen inside each training window. Saves `data/processed/backtest_forecasts_regression.csv`. Runs in about 75 seconds.
-3. `03_evaluate.ipynb`: backtest errors of all eight models (MAE in persons, RMSE in logs) per model and horizon; main comparison at h = 2; results without 2015-16 and 2020 and from 2022; year-by-year comparison. Saves tables in `output/tables/` and figures in `output/figures/`. The test period is not used yet.
+2c. `02c_estimate_indicator.ipynb`: the same three regressions plus two route features (changes of the indicator, using only months known at the cutoff), same backtest and same rules. Saves `data/processed/backtest_forecasts_indicator.csv`. Runs in about 60 seconds.
+3. `03_evaluate.ipynb`: backtest errors of all eleven models (MAE in persons, RMSE in logs) per model and horizon; main comparison at h = 2; results without 2015-16 and 2020 and from 2022; year-by-year comparison; does the route indicator help (each regression against its own version with the routes)? Saves tables in `output/tables/` and figures in `output/figures/`. The test period is not used yet.
 
-`main.ipynb` runs the five notebooks in order (about two minutes). Rerunning it from the raw data reproduces the same outputs (no random steps; seed fixed at 42).
+`main.ipynb` runs the six notebooks in order (about three minutes). Rerunning it from the raw data reproduces the same outputs (no random steps; seed fixed at 42).
 
 ## Data
 
