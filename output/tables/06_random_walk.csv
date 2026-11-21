@@ -1,0 +1,4 @@
+against,model,MAE,MAE against,change in MAE (%),years won (of 12),gap of the yearly averages,spread across years (std of b),success rule met
+Seasonal naive,Linear regression,358,681,-47.4,11,323,467,True
+12-month average,Linear regression,358,528,-32.2,9,167,417,True
+Random walk,Linear regression,358,379,-5.4,7,19,237,False
