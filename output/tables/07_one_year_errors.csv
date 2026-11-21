@@ -1,0 +1,11 @@
+model,MAE,mean_abs_pct_error
+Next 12 months = last 12 months,6261.0,31.0
+Long-run average,7078.0,43.0
+Ridge + Med routes,7672.0,37.0
+Ridge,7707.0,39.0
+Ridge + neighbours,7835.0,39.0
+Ridge + conflict,7910.0,40.0
+Linear regression + conflict,7950.0,41.0
+Linear regression,8029.0,42.0
+Linear regression + Med routes,11181.0,54.0
+Linear regression + neighbours,13794.0,68.0
