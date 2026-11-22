@@ -1,0 +1,6 @@
+model,1,2,3
+12-month average,297.0,331.0,359.0
+Linear regression,149.0,188.0,217.0
+Random walk,187.0,269.0,358.0
+Ridge (info only),130.0,192.0,222.0
+Ridge + Med routes (info only),139.0,209.0,216.0
