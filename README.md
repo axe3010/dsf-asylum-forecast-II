@@ -14,6 +14,7 @@ Goal: reproduce all outputs (figures and tables) from the raw data.
 
 - Install the packages in `requirements.txt` (`python -m pip install -r requirements.txt` from the project root).
 - Open `code/main.ipynb`, restart the kernel and run all cells.
+- Optional: `python 00_download_target.py` (from `code/`) downloads the target again from Eurostat. Recent months may differ slightly from the stored vintage, because Eurostat revises them.
 - Use `code/` as the working directory. If you start at the project root, run `%cd code` in a notebook cell first.
 
 ## Workflow

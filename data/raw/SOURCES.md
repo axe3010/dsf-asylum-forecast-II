@@ -5,6 +5,7 @@
 - Filter: geo = CH (Switzerland), citizen = TOTAL, sex = T, age = TOTAL, unit = PER (persons)
 - Columns: total applicants, first-time applicants, subsequent applicants (subsequent only reported from 2021)
 - Query: https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/migr_asyappctzm?geo=CH&citizen=TOTAL&sex=T&age=TOTAL&unit=PER&lang=EN
+- Download and conversion (JSON-stat to this CSV): `code/00_download_target.py`; applied to the stored vintage, its conversion gives this file byte for byte
 - Dataset last updated by Eurostat: 2026-11-13; downloaded 2026-11-16
 - Coverage: 2008-01 to 2026-09 (225 months); 2026-10 not yet published at download
 - Check at download: sum of total = 409,975; sum of first-time = 369,920; sum of subsequent = 15,565 (69 months)
