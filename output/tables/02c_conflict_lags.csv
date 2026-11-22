@@ -1,13 +1,13 @@
-combination,h,lag 1,lag 2,lag 3,lag 4,lag 5,lag 6,lag 7,lag 8,lag 9,lag 10,lag 11,lag 12
-all indicators,1,24,40,2,4,15,2,9,5,2,8,18,12
-all indicators,2,1,25,4,6,12,8,12,7,13,6,17,29
-all indicators,3,1,38,9,4,1,12,14,1,6,22,22,9
-conflict,1,29,23,1,2,22,9,22,2,1,6,15,9
-conflict,2,4,13,4,19,18,15,9,3,11,2,16,26
-conflict,3,4,15,27,4,4,4,7,0,3,15,44,12
-neighbours + conflict,1,31,43,1,2,20,2,10,8,5,4,7,8
-neighbours + conflict,2,6,25,13,6,13,23,9,4,10,3,13,15
-neighbours + conflict,3,0,38,17,8,0,4,16,1,1,12,34,8
-routes + conflict,1,30,22,5,2,22,5,27,5,0,3,13,7
-routes + conflict,2,1,19,8,15,16,3,19,1,10,3,20,25
-routes + conflict,3,6,20,24,0,1,13,17,0,6,19,26,7
+combination,h,lag 0,lag 1,lag 2,lag 3,lag 4,lag 5,lag 6,lag 7,lag 8,lag 9,lag 10,lag 11,lag 12
+all indicators,1,6,29,0,6,0,12,9,15,12,6,32,1,13
+all indicators,2,7,20,14,18,1,6,2,1,2,21,12,1,35
+all indicators,3,6,14,36,11,1,12,4,1,2,12,19,17,4
+conflict,1,3,19,11,3,0,9,11,13,14,18,37,2,1
+conflict,2,2,11,27,7,5,9,4,4,11,9,11,5,35
+conflict,3,11,9,33,11,2,24,1,2,1,7,11,16,11
+neighbours + conflict,1,8,14,12,15,0,6,5,4,21,8,36,0,12
+neighbours + conflict,2,4,16,33,5,1,7,0,3,8,28,1,4,30
+neighbours + conflict,3,16,1,41,7,0,18,3,2,0,18,15,17,1
+routes + conflict,1,1,20,1,5,2,10,3,18,15,21,38,1,6
+routes + conflict,2,6,19,16,11,6,6,5,1,6,7,18,2,37
+routes + conflict,3,9,14,28,10,1,9,1,4,1,6,12,32,12

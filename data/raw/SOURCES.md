@@ -52,12 +52,22 @@ In the backtest we use SEM's timing (at the cutoff in month m, the target is kno
 - Use: shares of the nationalities over the last 12 known months (weights of the conflict index)
 - Used in `01b_preprocess_indicators.ipynb` (section 11).
 
-## ucdp_ged261_country_month_deaths.csv
-- Source: UCDP Georeferenced Event Dataset (GED) Global version 26.1, file `GEDEvent_v26_1.csv` (274 MB, not stored here), https://ucdp.uu.se/downloads/
-- Downloaded 2026-11-19; 417,968 events, 1989-01 to 2025-12
-- Our processing: sum of the "best" estimate of deaths per country and month of `date_start`, all three types of violence (state-based, non-state, one-sided). `01b` (section 12) rebuilds the table if the raw file is put in `data/raw/`.
-- Timing: the yearly versions are published after the year ends and revised; UCDP Candidate (monthly) is about one month late. We use months up to m-2 (origin t-1), with the final values: an optimistic test.
-- Used in `01b_preprocess_indicators.ipynb` (section 12). The data end in December 2025, so in the test the conflict index can use only months up to then.
+## gdelt_events_by_country_month.csv
+- Source: GDELT 1.0 event database (Global Database of Events, Language and Tone), table `gdelt-bq.full.events` on Google BigQuery, https://www.gdeltproject.org/
+- Exported 2026-11-21 with this query (November 2026 dropped afterwards as incomplete):
+```sql
+SELECT MonthYear AS month, ActionGeo_CountryCode AS country, COUNT(*) AS events_all,
+  COUNTIF(EventRootCode IN ('18','19','20')) AS events_violent, SUM(NumArticles) AS articles_all,
+  SUM(IF(EventRootCode IN ('18','19','20'), NumArticles, 0)) AS articles_violent
+FROM `gdelt-bq.full.events` WHERE MonthYear >= 200601 AND ActionGeo_CountryCode IS NOT NULL
+GROUP BY month, country ORDER BY month, country
+```
+- Columns: month (YYYYMM), country (FIPS 10-4 code of the place of the event), events_all, events_violent (CAMEO root codes 18 assault, 19 fight, 20 unconventional mass violence), articles_all, articles_violent
+- Coverage: 2006-01 to 2026-10, 266 countries
+- Timing: coded from the news every 15 minutes and never revised, so the whole month t is known at origin t
+- Our processing: share of violent events (events_violent / events_all) per country and month; country codes mapped from ISO (Eurostat) to FIPS in `01b` (section 12)
+- Used in `01b_preprocess_indicators.ipynb` (sections 12 to 15).
 
 ## Considered and not used
+- UCDP GED 26.1 deaths in organised violence (https://ucdp.uu.se/downloads/): yearly versions published after the year ends and revised, data ending in December 2025, so not known at our cutoff and not available for the whole test period. Replaced by GDELT.
 - UNHCR monthly sea and land arrivals (Italy, Greece, Spain): the same numbers as the Frontex routes, one month earlier, but the monthly series start only in 2014 (Italy), 2017 (Spain) and 2018 (Greece), so they were not available in time for most of the backtest.
