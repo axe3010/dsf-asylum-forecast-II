@@ -12,9 +12,9 @@ Lasso + routes,250.0,374.0,467.0,0.19,0.285,0.345
 Linear regression + neighbours,264.0,361.0,465.0,0.203,0.282,0.344
 Ridge + neighbours,240.0,366.0,459.0,0.186,0.285,0.344
 Lasso + neighbours,249.0,372.0,450.0,0.192,0.289,0.341
-Linear regression + conflict,264.0,375.0,486.0,0.202,0.29,0.347
-Ridge + conflict,252.0,364.0,461.0,0.191,0.285,0.342
-Lasso + conflict,259.0,371.0,462.0,0.197,0.286,0.345
-Linear regression + all indicators,290.0,391.0,514.0,0.219,0.292,0.357
-Ridge + all indicators,255.0,369.0,485.0,0.192,0.288,0.353
-Lasso + all indicators,259.0,373.0,485.0,0.196,0.289,0.357
+Linear regression + conflict,286.0,372.0,489.0,0.211,0.288,0.355
+Ridge + conflict,259.0,357.0,463.0,0.193,0.281,0.351
+Lasso + conflict,251.0,372.0,474.0,0.191,0.287,0.356
+Linear regression + all indicators,309.0,401.0,524.0,0.223,0.296,0.364
+Ridge + all indicators,255.0,372.0,485.0,0.191,0.287,0.356
+Lasso + all indicators,261.0,380.0,490.0,0.196,0.292,0.361
