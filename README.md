@@ -4,7 +4,7 @@ Projet de groupe - Data Science Fundamentals (HSG)
 
 **Collaborators:** Louis Bitar, Thibaud Marti, Axel Walther, Fedor Kleymenov (Group 11)
 
-**This repository** is a copy of the group repository [fedorkleymenov-sketch/dsf-projet-groupe](https://github.com/fedorkleymenov-sketch/dsf-projet-groupe) (full history kept, up to commit `a116e8d`), with the analyses added after the test integrated into the notebook pipeline (marked † below).
+**This repository** is a copy of the group repository [fedorkleymenov-sketch/dsf-projet-groupe](https://github.com/fedorkleymenov-sketch/dsf-projet-groupe) (full history kept, up to commit `a116e8d`), extended with a second model family (indicators), a third simple rule, a lag test, a one-year horizon and ranges for planners, all in one pipeline.
 
 **Goal:** Forecast the number of asylum applications in Switzerland one to three months ahead, to support the capacity planning of federal reception places.
 
@@ -18,41 +18,40 @@ Goal: reproduce all outputs (figures and tables) from the raw data.
 
 ## Workflow
 
-The notebooks follow one pattern: `01` prepares the data, `02` produces backtest forecasts, `03` evaluates them and chooses the model, `04` tests the chosen model once. There are **two model families**, each with a linear regression, Ridge and Lasso:
+`01` prepares the data, `02` produces backtest forecasts, `03` evaluates them and chooses the model, `04` tests all candidates once, `05` gives the planner ranges and the newest forecast. There are **two model families**, each with a linear regression, Ridge and Lasso:
 
-1. **The series' own past** (`02b`): the family of our chosen model.
-2. **Own past + indicators** (`02c`): the Frontex routes (our plan); after the test also the applications in the neighbouring countries and a conflict index; each alone, all together, and all but one, to see which data lower the error the most. The indicators were chosen for data quality and timing (published in time for the cutoff in every month), not for their results.
+1. **The series' own past** (`02b`).
+2. **Own past + indicators** (`02c`): the Frontex routes towards Switzerland and the asylum applications in Germany, Austria, France and Italy, each alone and both together. Both are published in time for our cutoff in every month (known up to month $t-1$). Sources that were not (UNHCR's monthly arrivals, which start only in 2014 to 2018; UCDP's revised conflict deaths, which end in December 2025) are not used.
 
-**Added after the test.** The group chose the model (`03`, section 8, commit `c6a3976`) and then used the test period once (`04`, commit `4f284f5`). Everything marked † was added afterwards: it is labelled as such in each notebook, judged on the backtest only, and does not change the chosen model or its test result.
+**Timeline.** The group fixed the choice rule and chose the linear regression on 17 November 2026 (commit `c6a3976`), then ran the test once (commit `4f284f5`). The random walk, the neighbouring countries, the lag test (`02d`) and the one-year horizon (`02e`) were added afterwards, on the backtest only. The rule was not changed and still chooses the linear regression, so the test result of the chosen model is the same as in the first run.
 
 1. `01_preprocess.ipynb`: load and check the monthly series, split the months by time (first training window, backtest, test), explore the months before the test period, save `data/processed/asylum_clean.csv`.
-1b. `01b_preprocess_indicators.ipynb`: all indicators. Part A: the Frontex detections by route, summed over the Central Mediterranean, Eastern Mediterranean and Western Balkan routes; saves `routes_clean.csv`. † Part B: applications in Germany, Austria, France and Italy (Eurostat), monthly arrivals in Italy, Greece and Spain (UNHCR, the Frontex numbers one month earlier), Swiss applications by citizenship (Eurostat) and conflict deaths (UCDP); saves `extra_indicators_clean.csv`, `nationality_shares_clean.csv` and `conflict_intensity_clean.csv`. For every source: checks, what is known at the cutoff, exploration before the test period; logs (log(1 + x) where a month can be 0) and changes, never levels.
-2. `02_estimate.ipynb`: seasonal naive, 12-month average and three (S)ARIMA models in an expanding-window backtest (141 origins, h = 1, 2, 3), plus † the random walk (last known month); saves `data/processed/backtest_forecasts.csv`. About 30 seconds.
-2b. `02b_estimate_regression.ipynb`: **family 1**, linear regression, Ridge and Lasso on the series' own past (one model per horizon); the penalty is chosen on two validation blocks inside each training window; scaling inside the pipeline. Saves `backtest_forecasts_regression.csv`. About 60 seconds.
-2c. `02c_estimate_indicator.ipynb`: **family 2**, the same three regressions with indicators, same backtest and rules. Part A: + the Frontex routes (`backtest_forecasts_indicator.csv`). † Part B: the neighbours and the conflict index alone, and routes + neighbours + conflict together and all but one block (`backtest_forecasts_extra.csv`), and which indicators Lasso keeps (`output/tables/02c_lasso_kept.csv`). About nine minutes.
-2d. † `02d_estimate_lag_choice.ipynb`: would an older month work better? The lag (0 to 12 months) is chosen together with `alpha` inside each training window. Saves `backtest_forecasts_lag_choice.csv` and `output/tables/02d_chosen_lags.csv`. About five minutes.
-2e. † `02e_estimate_one_year.ipynb`: a second horizon for annual planning, the total of the next 12 months (94 origins), with and without indicators. Saves `backtest_forecasts_one_year.csv`.
-3. `03_evaluate.ipynb`: **Part A** (sections 1 to 8, before the test): backtest errors of the eleven planned models (MAE in persons, RMSE in logs), main comparison at h = 2, without the crisis periods, year by year, does the route indicator help? Section 8 chooses the final model: the linear regression. **† Part B** (sections 9 to 19): the random walk as a third simple rule; each indicator alone; **which data lower the MSE the most** (all indicators, minus one block at a time, and Lasso's choice); year by year and the success rule; the two families side by side (model 2 = the best regression with all indicators, chosen by code); the one-year horizon; would any of this change the choice (no). The test period is not used.
-4. `04_test.ipynb`: the chosen linear regression and the 12-month average on the test period (2024-10 to 2026-09), used once; refit at each origin on the months known then. Saves `test_forecasts.csv`, `output/tables/04_test_errors.csv` and a figure. † Section 8, information only: the random walk, and both model families on the same test months, including which indicators help there (`output/tables/04_test_errors_added_after.csv`).
-5. † `05_ranges_and_forecast.ipynb`: 80% and 90% ranges from the past errors of the chosen model, how often the actual number falls inside them, and the forecast from the newest data (origin September 2026).
+1b. `01b_preprocess_indicators.ipynb`: the two indicators: Frontex detections on the Central Mediterranean, Eastern Mediterranean and Western Balkan routes, and applications in DE + AT + FR + IT (Eurostat, the same dataset as the target). Checks, what is known at the cutoff, exploration before the test period; saves `routes_clean.csv` and `neighbours_clean.csv` (logs).
+2. `02_estimate.ipynb`: seasonal naive, 12-month average, random walk and three (S)ARIMA models in an expanding-window backtest (141 origins, h = 1, 2, 3); saves `backtest_forecasts.csv`. About 30 seconds.
+2b. `02b_estimate_regression.ipynb`: **family 1**, linear regression, Ridge and Lasso on the series' own past (one model per horizon); scaling inside the pipeline; the penalty is chosen on two validation blocks inside each training window. Saves `backtest_forecasts_regression.csv`. About 60 seconds.
+2c. `02c_estimate_indicator.ipynb`: **family 2**, the same regressions with the routes, with the neighbours and with both; same backtest and rules; which indicators Lasso keeps. Saves `backtest_forecasts_indicator.csv` and `output/tables/02c_lasso_kept.csv`. About three minutes.
+2d. `02d_estimate_lag_choice.ipynb`: would an older indicator month work better? The lag (1 to 12 months) is chosen together with `alpha` inside each training window. Saves `backtest_forecasts_lag_choice.csv` and `output/tables/02d_chosen_lags.csv`. About four minutes.
+2e. `02e_estimate_one_year.ipynb`: a second horizon for annual planning, the total of the next 12 months (94 origins). Saves `backtest_forecasts_one_year.csv`.
+3. `03_evaluate.ipynb`: backtest errors of all 20 models (MAE in persons, MSE and RMSE in logs); main comparison at h = 2; without the crisis periods; year by year; errors by horizon; do the indicators help (family 2 against family 1, year by year, success rule) and which data lower the error the most; the two families side by side; the one-year horizon; the choice before the test (section 10): the linear regression. The test period is not used.
+4. `04_test.ipynb`: all candidates on the test period (2024-10 to 2026-09) in one table, the forecasts made as in the backtest (refit at each origin on the months known then); main comparison of the chosen model with the 12-month average; test against backtest; month by month; which data help on the test months. Saves `test_forecasts.csv`, `output/tables/04_test_errors.csv` and a figure.
+5. `05_ranges_and_forecast.ipynb`: 80% and 90% ranges from the past errors of the chosen model, how often the actual number falls inside them, and the forecast from the newest data (origin September 2026).
 
-`main.ipynb` runs all notebooks in this order (about 25 minutes). Rerunning it from the raw data reproduces the same outputs (no random steps; seed fixed at 42).
+`main.ipynb` runs all notebooks in this order (about 10 minutes). Rerunning it from the raw data reproduces the same outputs (no random steps; seed fixed at 42).
 
 ## Main result
 
-Forecasting two months ahead, the linear regression on the series' own past misses by 188 applications per month on average in the test period (2024-10 to 2026-09), against 331 for the 12-month average (43% lower MAE). In the backtest (2013 to 2024-09) the gain was 32% (358 against 528). The route indicator (Frontex) did not improve the forecasts, because it is published too late.
+Forecasting two months ahead, the linear regression on the series' own past misses by **188 applications per month** on average in the test period (2024-10 to 2026-09), against 331 for the 12-month average (43% lower MAE) and 269 for the random walk (30% lower). In the backtest (2013 to 2024-09) the gain was 32% against the 12-month average (358 against 528), but only 5% against the random walk (379).
 
-### Added after the test (†)
-
-- **Random walk:** the simplest rule, "next months like the last known month", misses by 379 applications per month in the backtest ($h = 2$) and 269 in the test period. It was not among our planned baselines. Our linear regression is 5.4% better in the backtest (better in 7 of 12 years, so against this rule the 10% success rule would not be met) and 30% better in the test period.
-- **Two model families:** with the indicators that came out in time (Frontex routes, neighbouring countries, conflict index), the best model with all indicators (Ridge) misses by 368 applications per month in the backtest ($h = 2$), against 358 for our linear regression: more data does not help, and without a penalty it hurts (385). On the test months (information only, `04` section 8): 220 against 208.
-- **Which data help:** none clearly. Removing the neighbours or the conflict index lowers the error; only the newest route month helps Ridge a little. UNHCR's earlier arrivals are not used, because their monthly series start only in 2014 to 2018: they were not available in time for most of the backtest.
-- **Lags:** letting the model choose the lag (0 to 12 months) inside each training window gives unstable lags and higher errors for every block; the route data lead Swiss applications by one month only, which is already gone at our cutoff.
-- **One year ahead:** "next 12 months = last 12 months" is the best rule (error about 31%); no model or block beats it.
-- **Ranges:** the 80% range from past errors contains 80% of the actual numbers in the backtest (about ±30% at $h = 2$), but is too wide in calm periods and too narrow at the start of a crisis.
+- **Indicators (family 2):** the routes and the neighbouring countries, alone or together, make every regression worse in the backtest at h = 2 (+0.9% to +5.7% MAE) and win in only 2 to 6 of 12 years. Both move with Swiss applications in the same month (the routes also one month later), but at the cutoff we know them only up to $t-1$, so the useful signal arrives too late. On the test months the regressions with indicators lie between 182 and 213 (Ridge with both: 182, 3% below our model, within the noise).
+- **Which data help:** removing either indicator from the models with both mostly lowers the error; Lasso keeps only the newest route month at most origins (74%).
+- **Lags:** letting the model choose the lag (1 to 12 months) inside each window gives unstable lags (11 to 12 different ones) and higher errors.
+- **One year ahead:** "next 12 months = last 12 months" is the best rule (error about 31%); no model or indicator beats it.
+- **Ranges:** the 80% range from past errors contains 80% of the actual numbers in the backtest (about ±30% at h = 2), but is too wide in calm periods and too narrow at the start of a crisis.
 
 ## Data
 
+- `data/raw/eurostat_asylum_ch_monthly.csv`: Eurostat `migr_asyappctzm`, Switzerland, all citizenships, 2008-01 to 2026-09 (target).
 - `data/raw/frontex_detections_by_route_monthly.csv`: Frontex detections of illegal border-crossings by route, 2009-01 to 2026-09 (file dated 4 November 2026).
-- `data/raw/eurostat_asylum_ch_monthly.csv`: Eurostat `migr_asyappctzm`, Switzerland, all citizenships, 2008-01 to 2026-09. Source, download date and checks against SEM's figures in `data/raw/SOURCES.md`.
-- Extra indicators (†, read in `01b` Part B): `estat_migr_asyappctzm_neighbours_en.csv`, `estat_migr_asyappctzm_ch_by_citizenship_en.csv` (Eurostat), `unhcr_italy_sea_arrivals_by_month.json`, `unhcr_greece_sea_land_arrivals_by_month.csv`, `unhcr_spain_sea_land_arrivals_by_month.csv` (UNHCR) and `ucdp_ged261_country_month_deaths.csv` (UCDP GED 26.1, summed by country and month). Sources, download dates and checks in `data/raw/SOURCES.md`.
+- `data/raw/estat_migr_asyappctzm_neighbours_en.csv`: the same Eurostat dataset for Germany, Austria, France and Italy (and Switzerland as a check), 2008-01 to 2026-09.
+
+Sources, download dates and checks in `data/raw/SOURCES.md`.
