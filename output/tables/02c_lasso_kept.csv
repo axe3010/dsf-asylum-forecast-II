@@ -1,0 +1,9 @@
+feature,block,share of origins kept,mean coefficient
+routes_change_last_month,routes,0.31,0.002
+routes_change_3_months,routes,0.51,-0.027
+neighbours_change_last_month,neighbours,0.33,0.002
+neighbours_change_3_months,neighbours,0.44,-0.015
+med_change_last_month,Med routes,0.6,0.01
+med_change_3_months,Med routes,0.88,0.062
+conflict_3_months,conflict,0.21,0.004
+conflict_6_months,conflict,0.33,-0.005

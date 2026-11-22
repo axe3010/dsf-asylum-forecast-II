@@ -34,7 +34,7 @@ In the backtest we use SEM's timing (at the cutoff in month m, the target is kno
 
 ## Extra data for steps F to H (after the test)
 
-These files are read only in `01c_preprocess_extra_data.ipynb`; its outputs are used in `02d`, `02e`, `02f` and Part B of `03_evaluate.ipynb`. They were added after the test period was used (`04_test.ipynb`).
+These files are read only in `01b_preprocess_indicators.ipynb` (Part B); its outputs are used in `02c` (Part B), `02d`, `02e`, Part B of `03_evaluate.ipynb` and section 8 of `04_test.ipynb`. They were added after the test period was used (`04_test.ipynb`).
 
 ## estat_migr_asyappctzm_neighbours_en.csv
 - Dataset: Eurostat `migr_asyappctzm`, the same dataset as our target
@@ -55,7 +55,7 @@ These files are read only in `01c_preprocess_extra_data.ipynb`; its outputs are 
 
 ## unhcr_italy_sea_arrivals_by_month.json
 - Source: UNHCR Operational Data Portal, Europe Sea Arrivals, Italy, widget "Sea arrivals by month" (JSON), https://data.unhcr.org/en/situations/europe-sea-arrivals/location/24521 ; figures of the Italian Ministry of the Interior
-- Downloaded 2026-11-19 (copied from the browser; the copy stops after the data, so `01c` reads the monthly values with a text pattern)
+- Downloaded 2026-11-19 (copied from the browser; the copy stops after the data, so `01b` (Part B) reads the monthly values with a text pattern)
 - Coverage: 2014-01 to 2026-11 (November 2026 incomplete, not used)
 - Check: yearly totals as published by UNHCR (e.g. 2021: 67,477; 2022: 105,131)
 
@@ -64,10 +64,10 @@ These files are read only in `01c_preprocess_extra_data.ipynb`; its outputs are 
 - Downloaded 2026-11-19; coverage Greece 2018-01 to 2026-11, Spain 2017-01 to 2026-11 (November incomplete, not used)
 - Check: yearly totals, e.g. Spain 2018: 65,383; Greece 2018: 50,508
 - Timing: UNHCR updates weekly, so the whole month m-1 is known at our cutoff (origin t)
-- Note: the monthly changes are almost the same as those of the Frontex routes (correlation 0.99 Italy / Central Mediterranean, 0.96 Greece / Eastern Mediterranean, 0.97 Spain / Western Mediterranean + Western African), so `01c` uses the longer Frontex history at the UNHCR timing
+- Note: the monthly changes are almost the same as those of the Frontex routes (correlation 0.99 Italy / Central Mediterranean, 0.96 Greece / Eastern Mediterranean, 0.97 Spain / Western Mediterranean + Western African), so `01b` (Part B) uses the longer Frontex history at the UNHCR timing
 
 ## ucdp_ged261_country_month_deaths.csv
 - Source: UCDP Georeferenced Event Dataset (GED) Global version 26.1, file `GEDEvent_v26_1.csv` (274 MB, not stored here), https://ucdp.uu.se/downloads/
 - Downloaded 2026-11-19; 417,968 events, 1989-01 to 2025-12
-- Our processing: sum of the "best" estimate of deaths per country and month of `date_start`, all three types of violence (state-based, non-state, one-sided). `01c` rebuilds the table if the raw file is put in `data/raw/`.
+- Our processing: sum of the "best" estimate of deaths per country and month of `date_start`, all three types of violence (state-based, non-state, one-sided). `01b` (Part B) rebuilds the table if the raw file is put in `data/raw/`.
 - Timing: the yearly versions are published after the year ends and revised; UCDP Candidate (monthly) is about one month late. We use months up to m-2 (origin t-1), with the final values: an optimistic test.
