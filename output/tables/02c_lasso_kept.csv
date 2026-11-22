@@ -1,5 +1,7 @@
 feature,indicator,share of origins kept,mean coefficient
-routes_change_last_month,routes,0.74,0.01
-routes_change_3_months,routes,0.36,-0.009
-neighbours_change_last_month,neighbours,0.34,0.003
-neighbours_change_3_months,neighbours,0.46,-0.019
+routes_change_last_month,routes,0.79,0.012
+routes_change_3_months,routes,0.42,-0.011
+neighbours_change_last_month,neighbours,0.36,0.002
+neighbours_change_3_months,neighbours,0.54,-0.022
+conflict_3_months,conflict,0.46,0.002
+conflict_6_months,conflict,0.52,-0.001

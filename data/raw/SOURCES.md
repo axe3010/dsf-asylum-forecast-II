@@ -43,6 +43,20 @@ In the backtest we use SEM's timing (at the cutoff in month m, the target is kno
 - Timing: about six weeks after the month, so at our cutoff known up to month m-2 (origin t-1)
 - Used in `01b_preprocess_indicators.ipynb` (sections 7 to 10).
 
+## estat_migr_asyappctzm_ch_by_citizenship_en.csv
+- Dataset: Eurostat `migr_asyappctzm`, geo = CH, every citizenship, sex = T, age = TOTAL, unit = PER, applicant = TOTAL (SDMX-CSV)
+- Dataset last updated by Eurostat: 2026-11-18; downloaded 2026-11-19
+- Read with `keep_default_na=False`: Eurostat writes Namibia as `NA`
+- Check at download: the TOTAL row is identical to `eurostat_asylum_ch_monthly.csv` in 225 of 225 months
+- Use: shares of the nationalities over the last 12 known months (weights of the conflict index)
+- Used in `01b_preprocess_indicators.ipynb` (section 11).
+
+## ucdp_ged261_country_month_deaths.csv
+- Source: UCDP Georeferenced Event Dataset (GED) Global version 26.1, file `GEDEvent_v26_1.csv` (274 MB, not stored here), https://ucdp.uu.se/downloads/
+- Downloaded 2026-11-19; 417,968 events, 1989-01 to 2025-12
+- Our processing: sum of the "best" estimate of deaths per country and month of `date_start`, all three types of violence (state-based, non-state, one-sided). `01b` (section 12) rebuilds the table if the raw file is put in `data/raw/`.
+- Timing: the yearly versions are published after the year ends and revised; UCDP Candidate (monthly) is about one month late. We use months up to m-2 (origin t-1), with the final values: an optimistic test.
+- Used in `01b_preprocess_indicators.ipynb` (section 12). The data end in December 2025, so in the test the conflict index can use only months up to then.
+
 ## Considered and not used
 - UNHCR monthly sea and land arrivals (Italy, Greece, Spain): the same numbers as the Frontex routes, one month earlier, but the monthly series start only in 2014 (Italy), 2017 (Spain) and 2018 (Greece), so they were not available in time for most of the backtest.
-- UCDP GED 26.1 conflict deaths by country and month, with the nationalities of the applicants (Eurostat) as weights: final, revised numbers that were not available at the time, ending in December 2025.
